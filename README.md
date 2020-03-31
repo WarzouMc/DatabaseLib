@@ -1,8 +1,7 @@
-[![Release](https://jitpack.io/v/WarzouMc/DataBaseLib.svg)](https://jitpack.io/#WarzouMc/DataBaseLib)
-
-# DataBase-stock-information-in-code
+# DataBaseLib stock information in code
 
 This library is in beta 0.0.1, so someone update could come in the future.
+You need dbcp2 to use this lib.
 
 # How to register databases
 * Register your tables
