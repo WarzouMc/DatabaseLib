@@ -1,5 +1,5 @@
 [![Release](https://jitpack.io/v/WarzouMc/DataBaseLib.svg)]
-(https://jitpack.io/#WarzouMc/DataBaseLib)
+(https://jitpack.io/WarzouMc/DataBaseLib)
 
 # DataBase-stock-information-in-code
 
