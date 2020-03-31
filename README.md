@@ -17,3 +17,6 @@ On start of your program ypu need to create object `DataBaseAutoLoader`, and the
 > All method of this class return one HashMap with key `DataBaseTable` and value `DataBase`.
 
 Now read the docs.
+
+
+Support on discord will the wiki is not present.
