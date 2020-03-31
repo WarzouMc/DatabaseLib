@@ -1,6 +1,6 @@
 # DataBase-stock-information-in-code
 
-This library is in beta 0.1, so someone update could come in the future.
+This library is in beta 0.0.1, so someone update could come in the future.
 
 # How to register databases
 * Register your tables
