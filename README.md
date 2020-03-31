@@ -1,4 +1,4 @@
-[![Release](https://jitpack.io/v/WarzouMc/DataBaseLib.svg)]
+[![Release](https://jitpack.io/v/WarzouMc/DataBaseLib.svg)](https://jitpack.io/#WarzouMc/DataBaseLib)
 
 # DataBase-stock-information-in-code
 
