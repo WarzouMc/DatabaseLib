@@ -1,6 +1,6 @@
 package databaselib.manager;
 
-import databaselib.inforation.DataBaseColumnValues;
+import databaselib.information.DataBaseColumnValues;
 import databaselib.tables.DataBaseTable;
 import org.apache.commons.dbcp2.BasicDataSource;
 

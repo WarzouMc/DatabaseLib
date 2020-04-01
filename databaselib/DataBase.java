@@ -1,7 +1,7 @@
 package databaselib;
 
-import databaselib.inforation.DataBaseColumnValues;
-import databaselib.inforation.DataBaseInformationLoader;
+import databaselib.information.DataBaseColumnValues;
+import databaselib.information.DataBaseInformationLoader;
 import databaselib.tables.DataBaseTable;
 
 import java.util.LinkedHashMap;
