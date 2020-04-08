@@ -3,6 +3,9 @@ package databaselib.tables;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * <i>You need to use dbcp2 and mysql-connector (version 8.0.19)</i>
+ */
 public enum DataBaseTable {
 
     DEFAULT("default_table", Arrays.asList("first_column TEXT"));

@@ -34,6 +34,7 @@ public class DataBaseAutoLoader {
 
     public Map<DataBaseTable, DataBase> load(long save) {
         this.map.forEach((dataBaseTable1, dataBase) -> dataBase.load());
+        System.out.println("Initialization finish");
         Timer timer = new Timer();
         if (save > 0) {
             timer.schedule(new DataBaseAutoSave(this), save, save);
@@ -43,13 +44,17 @@ public class DataBaseAutoLoader {
         return this.map;
     }
 
-    Map<DataBaseTable, DataBase> save() {
+    public Map<DataBaseTable, DataBase> save() {
         this.map.forEach((dataBaseTable1, dataBase) -> dataBase.save());
         return this.map;
     }
 
     public Map<DataBaseTable, DataBase> get() {
         return this.map;
+    }
+
+    public DataBase get(DataBaseTable dataBaseTable) {
+        return this.map.get(dataBaseTable);
     }
 
 }

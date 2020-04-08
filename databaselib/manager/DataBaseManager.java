@@ -32,7 +32,7 @@ public class DataBaseManager {
         if (dataBaseTable == null)
             return null;
         this.connectionPool = new BasicDataSource();
-        this.connectionPool.setDriverClassName("com.mysql.jdbc.Driver");
+        this.connectionPool.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.connectionPool.setUsername(this.user);
         this.connectionPool.setPassword(this.password);
         this.connectionPool.setUrl("jdbc:mysql://" + this.host + "/" + this.name + "?autoReconnect=true");
