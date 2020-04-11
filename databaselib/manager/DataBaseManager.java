@@ -35,7 +35,7 @@ public class DataBaseManager {
         this.connectionPool.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.connectionPool.setUsername(this.user);
         this.connectionPool.setPassword(this.password);
-        this.connectionPool.setUrl("jdbc:mysql://" + this.host + "/" + this.name + "?autoReconnect=true");
+        this.connectionPool.setUrl("jdbc:mysql://" + this.host + "/" + this.name + "?autoReconnect=true&useSSL=false");
         this.connectionPool.setInitialSize(1);
         this.connectionPool.setMaxTotal(-1);
         return this;
