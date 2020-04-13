@@ -137,7 +137,6 @@ public class DataBaseManager {
         for (StringBuilder line : list) {
             String referenceValue = line.toString().split("'")[1];
             System.out.println("Look for '" + referenceValue + "' !");
-            long start = new Date().getTime();
             this.query(this.selectorQuery(referenceColumn, referenceValue), resultSet -> {
                 try {
                     if (!resultSet.next()) {
