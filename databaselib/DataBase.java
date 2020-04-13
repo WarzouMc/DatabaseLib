@@ -2,6 +2,7 @@ package databaselib;
 
 import databaselib.information.DataBaseColumnValues;
 import databaselib.information.DataBaseInformationLoader;
+import databaselib.information.save.DataBaseTableSaveInformation;
 import databaselib.tables.DataBaseTable;
 
 import java.util.LinkedHashMap;
@@ -71,7 +72,7 @@ public class DataBase {
         return this.dataBaseInformationLoader.get(referenceValue, column);
     }
 
-    public void save() {
-        this.dataBaseInformationLoader.save();
+    public DataBaseTableSaveInformation save() {
+        return this.dataBaseInformationLoader.save();
     }
 }

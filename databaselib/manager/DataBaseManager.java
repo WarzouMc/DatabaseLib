@@ -1,6 +1,7 @@
 package databaselib.manager;
 
 import databaselib.information.DataBaseColumnValues;
+import databaselib.information.save.DataBaseTableSaveInformation;
 import databaselib.tables.DataBaseTable;
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -8,10 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class DataBaseManager {
@@ -48,15 +46,14 @@ public class DataBaseManager {
         dataBaseTable.getRawValues().forEach(s -> stringBuilder.append(s).append(", "));
         update("CREATE TABLE IF NOT EXISTS " + dataBaseTable.getTableName() + " (" +
                 stringBuilder.toString().substring(0, stringBuilder.toString().length() - 2) +
-                ")");
+                ")", this.getConnection());
         System.out.println("Success \"" + this.dataBaseTable.getTableName() + "\" initialization !\n" +
                 "Wait few moment ...\n");
         return this;
     }
 
-    public DataBaseManager update(String query) {
+    public DataBaseManager update(String query, Connection connection) {
         try {
-            Connection connection = this.connectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -65,9 +62,8 @@ public class DataBaseManager {
         return this;
     }
 
-    public void query(String query, Consumer<ResultSet> resultSetConsumer) {
+    public void query(String query, Consumer<ResultSet> resultSetConsumer, Connection connection) {
         try {
-            Connection connection = this.connectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSetConsumer.accept(resultSet);
@@ -76,7 +72,10 @@ public class DataBaseManager {
         }
     }
 
-    public void save(LinkedHashMap<String, DataBaseColumnValues> map) {
+    public DataBaseTableSaveInformation save(LinkedHashMap<String, DataBaseColumnValues> map) {
+        DataBaseTableSaveInformation dataBaseTableSaveInformation = new DataBaseTableSaveInformation(this.dataBaseTable);
+        long start = now();
+
         System.out.println("Save operation for '" + this.getDataBaseTable().getTableName() + "' !\n" +
                 "...");
         int tableYDimension = map.size();
@@ -123,30 +122,41 @@ public class DataBaseManager {
             modifyLine(modifyList, referenceColumn);
 
         System.out.println("Save success !");
+
+        long end = now();
+
+        dataBaseTableSaveInformation.setDeletion(delList.size());
+        dataBaseTableSaveInformation.setAddition(addList.size());
+        dataBaseTableSaveInformation.setModification(modifyList.size());
+        dataBaseTableSaveInformation.setTimeTake(start, end);
+        return dataBaseTableSaveInformation;
     }
 
     private void addLine(List<StringBuilder> list, String referenceColumn, StringBuilder syntax) {
+        Connection connection = this.getConnection();
         for (StringBuilder line : list) {
             String referenceValue = line.toString().split("'")[1];
             System.out.println("Look for '" + referenceValue + "' !");
+            long start = new Date().getTime();
             this.query(this.selectorQuery(referenceColumn, referenceValue), resultSet -> {
                 try {
                     if (!resultSet.next()) {
                         System.out.println("####\n" +
                                 "Add line for value '" + referenceValue + "' !");
-                        this.update(this.addQuery(syntax.toString(), line.toString()));
+                        this.update(this.addQuery(syntax.toString(), line.toString()), connection);
                         System.out.println("Success add line '" + line + "' !\n" +
                                 "####\n");
                     }
                 }catch (SQLException e) {
                     e.printStackTrace();
                 }
-            });
+            }, connection);
         }
         System.out.println("Addition success !\n");
     }
 
     private void delLine(List<StringBuilder> list, String referenceColumn) {
+        Connection connection = this.getConnection();
         for (StringBuilder line : list) {
             String referenceValue = line.toString().split("'")[1];
             System.out.println("Look for '" + referenceValue + "' !");
@@ -155,19 +165,20 @@ public class DataBaseManager {
                     if (resultSet.next()) {
                         System.out.println("####\n" +
                                 "Del line for value '" + referenceValue + "' !");
-                        this.update(this.deleteQuery(referenceColumn, referenceValue));
+                        this.update(this.deleteQuery(referenceColumn, referenceValue), connection);
                         System.out.println("Success del line '" + line + "' !\n" +
                                 "####");
                     }
                 }catch (SQLException e) {
                     e.printStackTrace();
                 }
-            });
+            }, connection);
         }
         System.out.println("Deletion success !\n");
     }
 
     private void modifyLine(List<StringBuilder> list, String referenceColumn) {
+        Connection connection = this.getConnection();
         for (StringBuilder line : list) {
             String referenceValue = line.toString().split("'")[1];
             System.out.println("Look for '" + referenceValue + "' !");
@@ -176,14 +187,14 @@ public class DataBaseManager {
                     if (resultSet.next()) {
                         System.out.println("####\n" +
                                 "Modify line for value '" + referenceValue + "' !");
-                        this.update(this.modifyQuery(referenceColumn, referenceValue, line.toString()));
+                        this.update(this.modifyQuery(referenceColumn, referenceValue, line.toString()), connection);
                         System.out.println("Success modification line '" + line + "' !\n" +
                                 "####");
                     }
                 }catch (SQLException e) {
                     e.printStackTrace();
                 }
-            });
+            }, connection);
         }
         System.out.println("Modification success !\n");
     }
@@ -240,7 +251,20 @@ public class DataBaseManager {
         return list;
     }
 
+    public Connection getConnection() {
+        try {
+            return this.connectionPool.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public DataBaseTable getDataBaseTable() {
         return this.dataBaseTable;
+    }
+
+    private long now() {
+        return new Date().getTime();
     }
 }

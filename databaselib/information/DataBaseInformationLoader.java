@@ -1,5 +1,6 @@
 package databaselib.information;
 
+import databaselib.information.save.DataBaseTableSaveInformation;
 import databaselib.manager.DataBaseManager;
 import databaselib.tables.DataBaseTable;
 
@@ -81,9 +82,10 @@ public class DataBaseInformationLoader {
         return true;
     }
 
-    public void save() {
-        this.getDataBaseLoader().save(this.getColumnValues());
+    public DataBaseTableSaveInformation save() {
+        DataBaseTableSaveInformation dataBaseTableSaveInformation = this.getDataBaseLoader().save(this.getColumnValues());
         this.getColumnValues().forEach((s, dataBaseColumnValues) -> dataBaseColumnValues.reload());
+        return dataBaseTableSaveInformation;
     }
 
     public Object get(Object referenceValue, String column) {

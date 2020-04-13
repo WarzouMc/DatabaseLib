@@ -31,7 +31,7 @@ public class DataBaseColumnValues {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        });
+        }, this.dataBaseLoader.getConnection());
     }
 
     void reload() {
