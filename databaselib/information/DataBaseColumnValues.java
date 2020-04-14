@@ -35,7 +35,6 @@ public class DataBaseColumnValues {
     }
 
     void reload() {
-        LinkedList<Object> temp = new LinkedList<>(this.values);
         for (int i = 0; i < this.values.size(); i++) {
             if (this.goals.get(i) == Action.DELETE)
                 this.values.remove(i);

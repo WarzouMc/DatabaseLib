@@ -6,8 +6,13 @@ import databaselib.information.save.DataBaseTableSaveInformation;
 import databaselib.tables.DataBaseTable;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class DataBaseAutoLoader {
+
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private String host;
     private String user;
@@ -23,7 +28,7 @@ public class DataBaseAutoLoader {
     }
 
     public Map<DataBaseTable, DataBase> init() {
-        System.out.println("Initialisation of your database with DataBaseLib v_0.0.2 by Warzou");
+        System.out.println("Initialisation of your database with DataBaseLib v_0.0.3 by Warzou");
         Arrays.asList(DataBaseTable.values()).forEach(dataBaseTable -> {
             DataBase dataBase = new DataBase(this.host, this.user, this.password, this.name, dataBaseTable);
             this.map.put(dataBaseTable, dataBase);
@@ -43,14 +48,16 @@ public class DataBaseAutoLoader {
         return this.map;
     }
 
-    public DataBaseFullSaveInformation save() {
-        long start = new Date().getTime();
-        DataBaseFullSaveInformation dataBaseFullSaveInformation = new DataBaseFullSaveInformation();
-        this.map.forEach((dataBaseTable1, dataBase) -> dataBaseFullSaveInformation.addTableSave(dataBase.save()));
-        long end = new Date().getTime();
-        dataBaseFullSaveInformation.setTimeTake(start, end);
-        out(dataBaseFullSaveInformation);
-        return dataBaseFullSaveInformation;
+    public Future<DataBaseFullSaveInformation> save() {
+        return executorService.submit(() -> {
+            long start = new Date().getTime();
+            DataBaseFullSaveInformation dataBaseFullSaveInformation = new DataBaseFullSaveInformation();
+            this.map.forEach((dataBaseTable1, dataBase) -> dataBaseFullSaveInformation.addTableSave(dataBase.save()));
+            long end = new Date().getTime();
+            dataBaseFullSaveInformation.setTimeTake(start, end);
+            out(dataBaseFullSaveInformation);
+            return dataBaseFullSaveInformation;
+        });
     }
 
     private void out(DataBaseFullSaveInformation dataBaseFullSaveInformation) {
