@@ -68,7 +68,7 @@ public class DataBaseInformationLoader {
         return true;
     }
 
-    public boolean modify(LinkedList<Object> values, LinkedList<String> newValues) {
+    public boolean modify(LinkedList<Object> values, LinkedList<Object> newValues) {
         if (values.size() < this.getColumnValues().size())
             return false;
         int columnIndex = this.getColumnValues().get(this.getColumns().get(0)).getValues().indexOf(values.get(0));
@@ -110,5 +110,9 @@ public class DataBaseInformationLoader {
 
     public LinkedList<String> getColumns() {
         return this.columns;
+    }
+
+    public String getReferenceColumn() {
+        return this.getColumns().get(0);
     }
 }

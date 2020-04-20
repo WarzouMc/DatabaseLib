@@ -66,13 +66,13 @@ public class DataBaseAutoLoader {
             System.out.println("- Additions : " + dataBaseTableSaveInformation.getAddition());
             System.out.println("- Deletions : " + dataBaseTableSaveInformation.getDeletion());
             System.out.println("- Modifications : " + dataBaseTableSaveInformation.getModification());
-            System.out.println("This table has taken " + dataBaseTableSaveInformation.getTimeTake() + "s to be saved !\n");
+            System.out.println("This table took " + dataBaseTableSaveInformation.getTimeTake() + "s to be saved !\n");
         }
         System.out.println("\n### All save statistics ###");
         System.out.println("- Additions : " + dataBaseFullSaveInformation.getTotalAddition());
         System.out.println("- Deletions : " + dataBaseFullSaveInformation.getTotalDeletion());
         System.out.println("- Modifications : " + dataBaseFullSaveInformation.getTotalModification());
-        System.out.println("This save has taken " + dataBaseFullSaveInformation.getTimeTake() + "s !");
+        System.out.println("This save took " + dataBaseFullSaveInformation.getTimeTake() + "s !");
     }
 
     public Map<DataBaseTable, DataBase> get() {

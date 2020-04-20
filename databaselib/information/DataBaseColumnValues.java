@@ -59,15 +59,19 @@ public class DataBaseColumnValues {
         return true;
     }
 
-    public boolean modify(Object value, String newValue, boolean first, int index) {
+    public boolean modify(Object value, Object newValue, boolean first, int index) {
         if (!this.values.contains(value)) {
             return false;
         }
         if (first) {
+            if (getAction(index) == Action.ADD)
+                return true;
             this.goals.set(index, Action.MODIFY);
             return true;
         }
         this.values.set(index, newValue);
+        if (getAction(index) == Action.ADD)
+            return true;
         this.goals.set(index, Action.MODIFY);
         return true;
     }
@@ -85,33 +89,21 @@ public class DataBaseColumnValues {
     }
 
     public Object get(int index, boolean force) {
-        if (this.values.size() < index && (getPrivateAction(index) != Action.DELETE && !force))
+        if (this.values.size() < index && (getAction(index) != Action.DELETE && !force))
             return null;
         return this.values.get(index);
     }
 
     public int indexOf(Object value, boolean force) {
-        if (!this.values.contains(value) && (getPrivateAction(value) != Action.DELETE && !force))
+        if (!this.values.contains(value) && (getAction(value) != Action.DELETE && !force))
             return -1;
         return this.values.indexOf(value);
     }
 
-    private Action getPrivateAction(Object value) {
-        if (!this.values.contains(value))
-            return null;
-        return this.goals.get(this.values.indexOf(value));
-    }
-
-    private Action getPrivateAction(int index) {
+    public Action getAction(int index) {
         if (this.goals.size() < index)
             return null;
         return this.goals.get(index);
-    }
-
-    public Action getAction(int index) {
-        if (this.values.size() < index)
-            return null;
-        return this.getAction(this.get(index, true));
     }
 
     public Action getAction(Object value) {

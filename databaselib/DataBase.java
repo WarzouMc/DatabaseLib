@@ -40,6 +40,10 @@ public class DataBase {
         return list;
     }
 
+    public boolean exist(String referenceValue) {
+        return this.get(referenceValue, this.dataBaseInformationLoader.getReferenceColumn()) != null;
+    }
+
     public void add(LinkedList<Object> values) {
         this.dataBaseInformationLoader.add(values);
     }
@@ -48,7 +52,7 @@ public class DataBase {
         this.dataBaseInformationLoader.delete(values);
     }
 
-    public void modify(LinkedList<Object> values, LinkedList<String> newValues) {
+    public void modify(LinkedList<Object> values, LinkedList<Object> newValues) {
         this.dataBaseInformationLoader.modify(values, newValues);
     }
 
