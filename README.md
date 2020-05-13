@@ -13,11 +13,11 @@ You must use the DatabaseTable#add(Object id, AbstractDatabaseTables abstractDat
 
 `
 
-DatabaseAutoLoader dataBaseAutoLoader = new DatabaseAutoLoader();
+        DatabaseAutoLoader dataBaseAutoLoader = new DatabaseAutoLoader();
         
-dataBaseAutoLoader.init();
-        
-dataBaseAutoLoader.load(long save);
+        dataBaseAutoLoader.init();
+                
+        dataBaseAutoLoader.load(long save);
 
 `
 
