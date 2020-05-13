@@ -11,13 +11,13 @@ You must use the DatabaseTable#add(Object id, AbstractDatabaseTables abstractDat
 
 * Load all tables
 
-        `
+        
         DatabaseAutoLoader dataBaseAutoLoader = new DatabaseAutoLoader();
         
         dataBaseAutoLoader.init();
                 
         dataBaseAutoLoader.load(long save);
-        `
+        
 
 > All method of this class return one HashMap with key `DatabaseTable` and value `Database`.
 
