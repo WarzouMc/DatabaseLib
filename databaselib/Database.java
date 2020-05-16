@@ -88,7 +88,16 @@ public class Database {
     public Object get(Object referenceValue, String column) {
         return this.databaseInformationLoader.get(referenceValue, column);
     }
-
+    
+    public LinkedHashMap<String, LinkedList<Object>> getTable() {
+        LinkedHashMap<String, LinkedList<Object>> map = new LinkedHashMap<>();
+        this.databaseInformationLoader.getColumnValues().forEach((s, databaseColumnValues) -> {
+            LinkedList<Object> values = databaseColumnValues.getValues();
+            map.put(s, values);
+        });
+        return map;
+    }
+    
     public DatabaseTableSaveInformation save() {
         return this.databaseInformationLoader.save();
     }
