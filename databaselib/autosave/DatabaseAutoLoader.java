@@ -28,11 +28,8 @@ public class DatabaseAutoLoader {
         this.map.forEach((id, database) -> database.load());
         System.out.println("Initialization finish");
         Timer timer = new Timer();
-        if (save > 0) {
-            timer.schedule(new DatabaseAutoSave(this), save, save);
-            return this.map;
-        }
-        timer.schedule(new DatabaseAutoSave(this), 5000 * 60, 5000 * 60);
+        save = save > 0 ? save : 5000 * 60;
+        timer.schedule(new DatabaseAutoSave(this), save, save);
         return this.map;
     }
 
