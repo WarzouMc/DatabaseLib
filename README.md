@@ -5,6 +5,7 @@
 ## Version 1.1.0
 
 Javadoc -> https://warzoumc.github.io/DatabaseLib/javadoc/
+
 Wiki -> https://github.com/WarzouMc/DatabaseLib/wiki
 
 Support on discord will the wiki is not present.
