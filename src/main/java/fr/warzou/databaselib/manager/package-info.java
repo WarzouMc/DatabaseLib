@@ -1,9 +1,9 @@
 /**
- * It's in of all your table take update.
+ * It's there to all your tables take an update.
  * <p>You can find the connection to your table.</p>
  * <p>All table update in this class is async.</p>
  * @author Warzou
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.0.1
  */
 package fr.warzou.databaselib.manager;

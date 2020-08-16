@@ -10,13 +10,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
  * Manage the database with.
  * <p>No real interest in making changes from this class.</p>
  * @author Warzou
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.0.1
  */
 public class DatabaseManager {
@@ -123,7 +124,7 @@ public class DatabaseManager {
     }
 
     /**
-     * Use with {@link #selectorQuery(String, String)}
+     * Use with {@link #selectorQuery(String, Object)}
      * @param query sql query
      * @param resultSetConsumer result
      * @param connection database connection
@@ -145,10 +146,12 @@ public class DatabaseManager {
      * @return save log in {@link DatabaseTableSaveInformation}
      */
     public DatabaseTableSaveInformation save(LinkedHashMap<String, DatabaseColumnValues> map) {
+        if (this.databaseTablesRegister.isNoStorage())
+            return null;
         DatabaseTableSaveInformation databaseTableSaveInformation = new DatabaseTableSaveInformation(this.databaseTablesRegister);
         long start = now();
 
-        System.out.println("Save operation for '" + this.getAbstractDatabaseTables().getTableName() + "' !\n" +
+        System.out.println("Save operation for '" + this.getDatabaseTablesRegister().getTableName() + "' !\n" +
                 "...");
         int tableYDimension = map.size();
         int tableXDimension = map.get(map.keySet().iterator().next()).getValues().size();
@@ -158,9 +161,7 @@ public class DatabaseManager {
 
         LinkedList<DatabaseColumnValues> databaseColumnValuesLinkedList = new LinkedList<>();
 
-        map.forEach((s, databaseColumnValues) -> {
-            databaseColumnValuesLinkedList.add(databaseColumnValues);
-        });
+        map.forEach((s, databaseColumnValues) -> databaseColumnValuesLinkedList.add(databaseColumnValues));
 
         String referenceColumn = "";
         List<StringBuilder> addList = this.queryListByAction(databaseColumnValuesLinkedList, tableXDimension,
@@ -221,13 +222,13 @@ public class DatabaseManager {
                         "-> null reference value !");
                 continue;
             }
-            String[] query = queryCustomer(line, syntax);
+            String[] query = queryCustomer(line, syntax, DatabaseColumnValues.Action.ADD);
             this.query(this.selectorQuery(referenceColumn, referenceValue), resultSet -> {
                 try {
                     if (!resultSet.next()) {
                         System.out.println("####\n" +
                                 "Add line for value '" + referenceValue + "' !");
-                        this.update(this.addQuery(query[0], query[1].replace("\\", "\\\\")), connection);
+                        this.update(this.addQuery(query[1], query[0].replace("\\", "\\\\")), connection);
                         System.out.println("Success add line '" + line + "' !\n" +
                                 "####\n");
                     }
@@ -283,7 +284,8 @@ public class DatabaseManager {
                     if (resultSet.next()) {
                         System.out.println("####\n" +
                                 "Modify line for value '" + referenceValue + "' !");
-                        this.update(this.modifyQuery(referenceColumn, referenceValue, line.toString()), connection);
+                        String newLine = queryCustomer(line, new StringBuilder(), DatabaseColumnValues.Action.MODIFY)[0];
+                        this.update(this.modifyQuery(referenceColumn, referenceValue, newLine), connection);
                         System.out.println("Success modification line '" + line + "' !\n" +
                                 "####");
                     }
@@ -302,8 +304,8 @@ public class DatabaseManager {
      * @return selection query
      * @since 0.0.1
      */
-    private String selectorQuery(String referenceColumn, String referenceValue) {
-        return "SELECT * FROM " + this.getAbstractDatabaseTables().getTableName() + " WHERE " + referenceColumn + "='" + referenceValue + "'";
+    private String selectorQuery(String referenceColumn, Object referenceValue) {
+        return "SELECT * FROM " + this.getDatabaseTablesRegister().getTableName() + " WHERE " + referenceColumn + "='" + referenceValue + "'";
     }
 
     /**
@@ -314,7 +316,7 @@ public class DatabaseManager {
      * @since 0.0.1
      */
     private String deleteQuery(String referenceColumn, String referenceValue) {
-        return "DELETE FROM " + this.getAbstractDatabaseTables().getTableName() + " WHERE " + referenceColumn + "='" + referenceValue + "'";
+        return "DELETE FROM " + this.getDatabaseTablesRegister().getTableName() + " WHERE " + referenceColumn + "='" + referenceValue + "'";
     }
 
     /**
@@ -325,7 +327,7 @@ public class DatabaseManager {
      * @since 0.0.1
      */
     private String addQuery(String syntax, String line) {
-        return "INSERT INTO " + this.getAbstractDatabaseTables().getTableName() + syntax + " VALUES " + line;
+        return "INSERT INTO " + this.getDatabaseTablesRegister().getTableName() + syntax + " VALUES " + line;
     }
 
     /**
@@ -337,7 +339,7 @@ public class DatabaseManager {
      * @since 0.0.1
      */
     private String modifyQuery(String referenceColumn, String referenceValue, String line) {
-        return "UPDATE " + this.getAbstractDatabaseTables().getTableName() + " SET " + line + " WHERE " + referenceColumn + "='" + referenceValue + "'";
+        return "UPDATE " + this.getDatabaseTablesRegister().getTableName() + " SET " + line + " WHERE " + referenceColumn + "='" + referenceValue + "'";
     }
 
     /**
@@ -393,8 +395,8 @@ public class DatabaseManager {
     public Connection getConnection() {
         try {
             return this.connectionPool.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
         return null;
     }
@@ -404,7 +406,7 @@ public class DatabaseManager {
      * @return {@link DatabaseTablesRegister} to this table
      * @since 1.0.0
      */
-    public DatabaseTablesRegister getAbstractDatabaseTables() {
+    public DatabaseTablesRegister getDatabaseTablesRegister() {
         return this.databaseTablesRegister;
     }
 
@@ -418,22 +420,132 @@ public class DatabaseManager {
     }
 
     /**
+     * Return all value in your table of now
+     * @return {@link LinkedHashMap} with column names and their values
+     * @since 1.1.1
+     */
+    public LinkedHashMap<String, LinkedList<Object>> getAll() {
+        LinkedHashMap<String, LinkedList<Object>> map = new LinkedHashMap<>();
+        Connection connection = getConnection();
+        for (String column : this.databaseTablesRegister.getColumns()) {
+            LinkedList<Object> values = new LinkedList<>();
+            query("SELECT " + column + " FROM " + this.databaseTablesRegister.getTableName(), resultSet -> {
+                try {
+                    while (resultSet.next())
+                        values.add(resultSet.getObject(column));
+                } catch (SQLException exception) {
+                    exception.printStackTrace();
+                }
+            }, connection);
+            map.put(column, values);
+        }
+        return map;
+    }
+
+    /**
+     * Return all the values in one line on your table
+     * @param referenceColumn first column on your table
+     * @param referenceValue value of you want on referenceColumn
+     * @return {@link LinkedList} of all value in a line
+     * @since 1.1.1
+     */
+    public LinkedList<Object> rawLineGetter(String referenceColumn, Object referenceValue) {
+        LinkedList<Object> list = new LinkedList<>();
+        LinkedHashMap<String, LinkedList<Object>> map = getAll();
+        int index = map.get(referenceColumn).indexOf(referenceValue);
+        if (index == -1)
+            return null;
+        map.keySet().forEach(s -> list.add(map.get(s).get(index)));
+        return list;
+    }
+
+    /**
+     * Get the value of a target cell
+     * @param referenceColumn first column in your table
+     * @param referenceValue target line value on referenceColumn
+     * @param column where is your cell
+     * @return value of your target cell
+     * @since 1.1.1
+     */
+    public Object rawGetter(String referenceColumn, Object referenceValue, String column) {
+        Connection connection = getConnection();
+        AtomicReference<Object> object = new AtomicReference<>();
+        object.set(null);
+        query(selectorQuery(referenceColumn, referenceValue), resultSet -> {
+            try {
+                if (resultSet.next())
+                    object.set(resultSet.getObject(column));
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        }, connection);
+        return object.get();
+    }
+
+    /**
+     * Add/del/modify values in table
+     * @param referenceColumn first column in your table
+     * @param values {@link LinkedList} of your values
+     * @param action what you want to do
+     * @param lastReferenceValue reference value before the modification (only for {@link DatabaseColumnValues.Action#MODIFY}
+     * @return true is the changes is a success
+     * @since 1.1.1
+     */
+    public boolean rawSetter(String referenceColumn, LinkedList<Object> values, DatabaseColumnValues.Action action, Object lastReferenceValue) {
+        Object referenceValue = values.get(0);
+        String syntax = createSyntax();
+        if (action == DatabaseColumnValues.Action.NULL)
+            return false;
+        if (rawGetter(referenceColumn, referenceValue, referenceColumn) != null && action == DatabaseColumnValues.Action.ADD)
+            return false;
+        StringBuilder line = new StringBuilder();
+        if (action == DatabaseColumnValues.Action.MODIFY) {
+            for (int i = 0; i < values.size(); i++) {
+                Object value = values.get(i);
+                String columnName = this.databaseTablesRegister.getColumns().get(i);
+                line.append(", ").append(columnName).append("='").append(value).append("'");
+            }
+            line.replace(0, 2, "");
+            String[] query = queryCustomer(line, new StringBuilder(syntax), action);
+            update(modifyQuery(referenceColumn, lastReferenceValue + "", query[0]), getConnection());
+            return true;
+        }
+        line.append('(');
+        values.forEach(o -> {
+            line.append(", ");
+            line.append("'").append(o).append("'");
+        });
+        line.append(')');
+        line.replace(1, 3, "");
+        String[] query = queryCustomer(line, new StringBuilder(syntax), action);
+        String actionQuery = action == DatabaseColumnValues.Action.ADD ? addQuery(query[1], query[0])
+                : deleteQuery(referenceColumn, referenceValue + "");
+        update(actionQuery, getConnection());
+        return true;
+    }
+
+    /**
      * Modify query to not take null values
      * @param line original line for the query
      * @param syntax original syntax for the query
-     * @return query with modification to not take null values
+     * @param action what is the query action
+     * @return query with modification to not take null values (0: line ; 1: syntax)
      * @since 1.1.0
      */
-    private String[] queryCustomer(StringBuilder line, StringBuilder syntax) {
+    private String[] queryCustomer(StringBuilder line, StringBuilder syntax, DatabaseColumnValues.Action action) {
+        String rawLine = line.toString();
+
+        //modify
+        if (action == DatabaseColumnValues.Action.MODIFY)
+            return new String[] {rawLine.replace("'null'", "NULL"), ""};
+
+        //add
         String rawSyntax = syntax.toString();
         String[] splitInsertValue = line.toString().split("'");
         List<Integer> removeIndex = new ArrayList<>();
-        for (int i = 2; i < splitInsertValue.length; i++) {
+        for (int i = 2; i < splitInsertValue.length; i++)
             if (splitInsertValue[i].equals("null"))
                 removeIndex.add(i);
-        }
-        String rawLine = line.toString().replace("null", "").replace("'', ",  "")
-                .replace(", ''", "");
         String[] splitRawSyntax = rawSyntax.split(",");
         removeIndex.forEach(integer -> splitRawSyntax[(integer - 1) / 2] = "");
         StringBuilder newSyntax = new StringBuilder();
@@ -446,6 +558,25 @@ public class DatabaseManager {
             newSyntax.append(column);
         }
         newSyntax.append(")");
-        return new String[] {newSyntax.toString(), rawLine};
+        rawLine = rawLine.replace(", 'null'", "");
+        return new String[] {rawLine, newSyntax.toString()};
+    }
+
+    /**
+     * Create the query syntax
+     * @return query syntax for values
+     * @since 1.1.1
+     */
+    private String createSyntax() {
+        StringBuilder syntax = new StringBuilder();
+        LinkedList<String> columns = this.databaseTablesRegister.getColumns();
+        syntax.append("(");
+        for (int i = 0; i < columns.size(); i++) {
+            if (i > 0) syntax.append(", ");
+            String column = columns.get(i);
+            syntax.append(column);
+        }
+        syntax.append(")");
+        return syntax.toString();
     }
 }

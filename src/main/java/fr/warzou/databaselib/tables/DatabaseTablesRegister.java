@@ -8,7 +8,7 @@ import java.util.LinkedList;
 /**
  * Define your table properties to allow the creation of this table
  * @author Warzou
- * @version 1.1.0
+ * @version 1.1.1
  * @since 1.0.0
  */
 public class DatabaseTablesRegister {
@@ -34,9 +34,13 @@ public class DatabaseTablesRegister {
      */
     private String tableName;
     /**
-     * Take out modification when you reload table if true
+     * Take the modifications from another source when you reload table if true
      */
     private boolean newCallOnReload;
+    /**
+     * Do not save values in code
+     */
+    private boolean noStorage;
 
     /**
      * Raw column {@link LinkedList}
@@ -55,15 +59,17 @@ public class DatabaseTablesRegister {
      * @param groupName name of the group where is your table
      * @param tableName name of the table
      * @param newCallOnReload refresh your table with modification as from another source
+     * @param noStorage if true do not save values in code
      * @since 1.0.0
      */
-    public DatabaseTablesRegister(String host, String user, String password, String groupName, String tableName, boolean newCallOnReload) {
+    public DatabaseTablesRegister(String host, String user, String password, String groupName, String tableName, boolean newCallOnReload, boolean noStorage) {
         this.host = host;
         this.user = user;
         this.password = password;
         this.groupName = groupName;
         this.tableName = tableName;
         this.newCallOnReload = newCallOnReload;
+        this.noStorage = noStorage;
     }
 
     /**
@@ -120,6 +126,15 @@ public class DatabaseTablesRegister {
         this.columns.add(column);
         this.option.add(option);
         return this;
+    }
+
+    /**
+     * Change refresh modification call value
+     * @param newCallOnReload true to refresh your table with modification as from another source
+     * @since 1.1.1
+     */
+    public void setNewCallOnReload(boolean newCallOnReload) {
+        this.newCallOnReload = newCallOnReload;
     }
 
     /**
@@ -260,5 +275,14 @@ public class DatabaseTablesRegister {
      */
     public boolean isNewCallOnReload() {
         return this.newCallOnReload;
+    }
+
+    /**
+     * Return storage keeping value
+     * @return true if you don't keep values
+     * @since 1.1.1
+     */
+    public boolean isNoStorage() {
+        return this.noStorage;
     }
 }

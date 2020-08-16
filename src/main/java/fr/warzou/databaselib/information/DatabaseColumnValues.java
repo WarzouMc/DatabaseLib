@@ -3,13 +3,14 @@ package fr.warzou.databaselib.information;
 import fr.warzou.databaselib.manager.DatabaseManager;
 import fr.warzou.databaselib.tables.DatabaseTablesRegister;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
 /**
  * Manage all value for a target column.
  * @author Warzou
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.0.1
  */
 public class DatabaseColumnValues {
@@ -61,12 +62,13 @@ public class DatabaseColumnValues {
 
     /**
      * Init the target column.
-     * <p>Add all value of this column in {@link #values} and set default goal {@link Action#NULL}.</p>
+     * <p>Add all value of this column in {@link #values} and set default goal {@link DatabaseColumnValues.Action#NULL}.</p>
      * @since 0.0.1
      */
     void init() {
         this.values.clear();
         this.goals.clear();
+        Connection connection = this.databaseManager.getConnection();
         this.databaseManager.query("SELECT " + this.column + " FROM " + this.databaseTablesRegister.getTableName(), resultSet -> {
             try {
                 while (resultSet.next()) {
@@ -77,7 +79,7 @@ public class DatabaseColumnValues {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }, this.databaseManager.getConnection());
+        }, connection);
     }
 
     /**
@@ -90,10 +92,9 @@ public class DatabaseColumnValues {
             init();
             return;
         }
-        for (int i = 0; i < this.values.size(); i++) {
+        for (int i = 0; i < this.values.size(); i++)
             if (this.goals.get(i) == Action.DELETE)
                 this.values.remove(i);
-        }
         this.goals.clear();
         this.values.forEach(s -> this.goals.add(Action.NULL));
     }

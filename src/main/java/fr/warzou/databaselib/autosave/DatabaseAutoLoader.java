@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 /**
  * Load your table.
  * @author Warzou
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.0.1
  */
 public class DatabaseAutoLoader {
@@ -42,7 +42,7 @@ public class DatabaseAutoLoader {
      * @since 0.0.1
      */
     public Map<Object, Database> init() {
-        System.out.println("Initialisation of your database with DataBaseLib v_1.1.0 by Warzou");
+        System.out.println("Initialisation of your database with DatabaseLib v_1.1.1 by Warzou !");
         DatabaseTable.getDatabaseTablesRegisterLinkedHashMap().forEach((id, abstractDatabaseTables) -> {
             Database dataBase = new Database(abstractDatabaseTables);
             this.map.put(id, dataBase);
@@ -74,7 +74,12 @@ public class DatabaseAutoLoader {
         return executorService.submit(() -> {
             long start = new Date().getTime();
             DatabaseFullSaveInformation dataBaseFullSaveInformation = new DatabaseFullSaveInformation();
-            this.map.forEach((dataBaseTable1, database) -> dataBaseFullSaveInformation.addTableSave(database.save()));
+            this.map.forEach((dataBaseTable1, database) -> {
+                DatabaseTableSaveInformation databaseTableSaveInformation = database.save();
+                if (databaseTableSaveInformation == null)
+                    return;
+                dataBaseFullSaveInformation.addTableSave(databaseTableSaveInformation);
+            });
             long end = new Date().getTime();
             dataBaseFullSaveInformation.setTimeTake(start, end);
             out(dataBaseFullSaveInformation);
@@ -89,7 +94,7 @@ public class DatabaseAutoLoader {
      */
     private void out(DatabaseFullSaveInformation databaseFullSaveInformation) {
         for (DatabaseTableSaveInformation dataBaseTableSaveInformation : databaseFullSaveInformation.getDatabaseTableSaveInformation()) {
-            System.out.println("### Save statistics on " + dataBaseTableSaveInformation.getAbstractDatabaseTables().getTableName() + " ###");
+            System.out.println("### Save statistics on " + dataBaseTableSaveInformation.getDatabaseTablesRegister().getTableName() + " ###");
             System.out.println("- Additions : " + dataBaseTableSaveInformation.getAddition());
             System.out.println("- Deletions : " + dataBaseTableSaveInformation.getDeletion());
             System.out.println("- Modifications : " + dataBaseTableSaveInformation.getModification());

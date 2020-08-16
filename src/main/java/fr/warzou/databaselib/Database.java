@@ -5,15 +5,13 @@ import fr.warzou.databaselib.information.DatabaseInformationLoader;
 import fr.warzou.databaselib.information.save.DatabaseTableSaveInformation;
 import fr.warzou.databaselib.tables.DatabaseTablesRegister;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 /**
  * Main manager for your table : getter, add/del/modify line
- * <p>
- *     <i>To use this lib you need mysql-connector-java and dbcp2</i>
- * </p>
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.0.1
  * @author Warzou
  */
@@ -89,11 +87,11 @@ public class Database {
 
     /**
      * Delete line in your table
-     * @param values {@link LinkedList} of all value in one line
+     * @param referenceValue first value on your line
      * @since 0.0.1
      */
-    public void delete(LinkedList<Object> values) {
-        this.databaseInformationLoader.delete(values);
+    public void delete(Object referenceValue) {
+        this.databaseInformationLoader.delete(new LinkedList<>(Collections.singletonList(referenceValue)));
     }
 
     /**
@@ -200,13 +198,14 @@ public class Database {
      * @return {@link LinkedList} of all value in one line
      * @since 1.0.1
      */
-    public LinkedList<Object> fullLineByReference(String reference) {
+    public LinkedList<Object> fullLineByReference(Object reference) {
+        if (this.databaseTablesRegister.isNoStorage())
+            return this.databaseInformationLoader.getDatabaseManager().rawLineGetter(this.databaseTablesRegister.getColumns().getFirst(),
+                    reference);
         LinkedList<Object> list = new LinkedList<>();
         LinkedHashMap<String, DatabaseColumnValues> columnValues = this.databaseInformationLoader.getColumnValues();
         int index = columnValues.get(this.databaseInformationLoader.getColumns().get(0)).getValues().indexOf(reference);
-        columnValues.forEach((s, databaseColumnValues) -> {
-            list.add(databaseColumnValues.get(index, false));
-        });
+        columnValues.forEach((s, databaseColumnValues) -> list.add(databaseColumnValues.get(index, false)));
         return list;
     }
 
@@ -215,11 +214,10 @@ public class Database {
      * @since 1.0.2
      */
     public LinkedHashMap<String, LinkedList<Object>> getTable() {
+        if (this.databaseTablesRegister.isNoStorage())
+            return this.databaseInformationLoader.getDatabaseManager().getAll();
         LinkedHashMap<String, LinkedList<Object>> map = new LinkedHashMap<>();
-        this.databaseInformationLoader.getColumnValues().forEach((s, databaseColumnValues) -> {
-            LinkedList<Object> values = databaseColumnValues.getValues();
-            map.put(s, values);
-        });
+        this.databaseInformationLoader.getColumnValues().forEach((s, databaseColumnValues) -> map.put(s, databaseColumnValues.getValues()));
         return map;
     }
 
@@ -230,6 +228,15 @@ public class Database {
      */
     public DatabaseTableSaveInformation save() {
         return this.databaseInformationLoader.save(this.databaseTablesRegister.isNewCallOnReload());
+    }
+
+    /**
+     * Change refresh modification call value
+     * @param newCallOnReload true to refresh your table with modification as from another source
+     * @since 1.1.1
+     */
+    public void setNewCallOnReload(boolean newCallOnReload) {
+        this.databaseTablesRegister.setNewCallOnReload(newCallOnReload);
     }
 
     /**
@@ -262,5 +269,23 @@ public class Database {
      */
     public String getUser() {
         return this.user;
+    }
+
+    /**
+     * Return refresh modification call value
+     * @return true if your table take the modification of another source when it's reload
+     * @since 1.1.1
+     */
+    public boolean isNewCallOnReload() {
+        return this.databaseTablesRegister.isNewCallOnReload();
+    }
+
+    /**
+     * Return storage keeping value
+     * @return true if you don't keep values
+     * @since 1.1.1
+     */
+    public boolean isNoStorage() {
+        return this.databaseTablesRegister.isNoStorage();
     }
 }

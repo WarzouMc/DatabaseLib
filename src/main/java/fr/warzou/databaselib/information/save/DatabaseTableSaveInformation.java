@@ -119,7 +119,7 @@ public class DatabaseTableSaveInformation {
      * @return associate {@link DatabaseTablesRegister}
      * @since 0.0.2
      */
-    public DatabaseTablesRegister getAbstractDatabaseTables() {
+    public DatabaseTablesRegister getDatabaseTablesRegister() {
         return this.databaseTablesRegister;
     }
 }

@@ -14,7 +14,7 @@ import java.util.Map;
  * <p>You could create modification on the table from this class</p>
  * <p>but {@link Database} is better for this.</p>
  * @author Warzou
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.0.1
  */
 public class DatabaseInformationLoader {
@@ -84,11 +84,13 @@ public class DatabaseInformationLoader {
                 .connection()
                 .init();
         this.columnType.keySet().forEach(s -> {
+            this.columns.add(s);
+            if (this.databaseTablesRegister.isNoStorage())
+                return;
             DatabaseColumnValues databaseColumnValues = new DatabaseColumnValues(this.databaseTablesRegister,
                     this.databaseManager, s, this.databaseTablesRegister.getOptionOfColumn(s));
             databaseColumnValues.init();
             this.columnValues.put(s, databaseColumnValues);
-            this.columns.add(s);
         });
     }
 
@@ -99,6 +101,8 @@ public class DatabaseInformationLoader {
      * @since 0.0.1
      */
     public boolean add(LinkedList<Object> values) {
+        if (this.databaseTablesRegister.isNoStorage())
+            return this.databaseManager.rawSetter(this.databaseTablesRegister.getColumns().getFirst(), values, DatabaseColumnValues.Action.ADD, null);
         if (values.size() < this.getColumnValues().size())
             return false;
         for (Map.Entry<String, DatabaseColumnValues> entry : this.getColumnValues().entrySet()) {
@@ -118,6 +122,8 @@ public class DatabaseInformationLoader {
      * @since 0.0.1
      */
     public boolean delete(LinkedList<Object> values) {
+        if (this.databaseTablesRegister.isNoStorage())
+            return this.databaseManager.rawSetter(this.databaseTablesRegister.getColumns().getFirst(), values, DatabaseColumnValues.Action.DELETE, null);
         if (values.size() < this.getColumnValues().size())
             return false;
         for (Map.Entry<String, DatabaseColumnValues> entry : this.getColumnValues().entrySet()) {
@@ -138,6 +144,8 @@ public class DatabaseInformationLoader {
      * @since 0.0.1
      */
     public boolean modify(LinkedList<Object> values, LinkedList<Object> newValues) {
+        if (this.databaseTablesRegister.isNoStorage())
+            return this.databaseManager.rawSetter(this.databaseTablesRegister.getColumns().getFirst(), newValues, DatabaseColumnValues.Action.MODIFY, values.getFirst());
         if (values.size() < this.getColumnValues().size())
             return false;
         int columnIndex = this.getColumnValues().get(this.getColumns().get(0)).getValues().indexOf(values.get(0));
@@ -171,6 +179,8 @@ public class DatabaseInformationLoader {
      * @since 0.0.1
      */
     public Object get(Object referenceValue, String column) {
+        if (this.databaseTablesRegister.isNoStorage())
+            return this.databaseManager.rawGetter(getReferenceColumn(), referenceValue, column);
         String referenceColumn = this.getColumns().get(0);
         int index = this.columnValues.get(referenceColumn).indexOf(referenceValue, false);
         if (index == -1 || !this.columnValues.containsKey(column))
@@ -181,9 +191,12 @@ public class DatabaseInformationLoader {
     /**
      * Get all table
      * @return {@link LinkedHashMap} in key column and value {@link DatabaseColumnValues}
+     *  <strong>return null if no storage is true</strong>
      * @since 0.0.1
      */
     public LinkedHashMap<String, DatabaseColumnValues> getColumnValues() {
+        if (this.databaseTablesRegister.isNoStorage())
+            return null;
         return this.columnValues;
     }
 
@@ -193,6 +206,8 @@ public class DatabaseInformationLoader {
      * @since 0.0.1
      */
     public LinkedHashMap<String, String> getColumnType() {
+        if (this.databaseTablesRegister.isNoStorage())
+            return this.databaseTablesRegister.getColumnAndType();
         return this.columnType;
     }
 
@@ -211,6 +226,8 @@ public class DatabaseInformationLoader {
      * @since 0.0.1
      */
     public LinkedList<String> getColumns() {
+        if (this.databaseTablesRegister.isNoStorage())
+            return this.databaseTablesRegister.getColumns();
         return this.columns;
     }
 
@@ -220,6 +237,6 @@ public class DatabaseInformationLoader {
      * @since 0.0.1
      */
     public String getReferenceColumn() {
-        return this.getColumns().get(0);
+        return getColumns().get(0);
     }
 }

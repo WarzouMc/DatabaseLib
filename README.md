@@ -2,26 +2,14 @@
 
 # DatabaseLib stock information in code
 
-This library is in 1.0.0, so someone update could come in the future.
-You need dbcp2 to use this lib.
+## Version 1.1.1
 
-# How to register databases
-* Register your tables
-You must use the DatabaseTable#add(Object id, AbstractDatabaseTables abstractDatabaseTables)
+Download :
 
-* Load all tables
+- Normal : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-1/normal/DatabaseLib-1.1.1.jar
 
-        
-        DatabaseAutoLoader dataBaseAutoLoader = new DatabaseAutoLoader();
-        
-        dataBaseAutoLoader.init();
-                
-        dataBaseAutoLoader.load(long save);
-        
+- For spigot : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-1/spigot/DatabaseLib_spigot-1.1.1.jar
 
-> All method of this class return one HashMap with key `DatabaseTable` and value `Database`.
+Javadoc -> https://warzoumc.github.io/DatabaseLib/javadoc/
 
-Now read the docs.
-
-
-Support on discord will the wiki is not present.
+Wiki -> https://github.com/WarzouMc/DatabaseLib/wiki
