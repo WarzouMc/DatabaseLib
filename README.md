@@ -9,11 +9,7 @@ Download :
 - Normal : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-1/normal/DatabaseLib-1.1.1.jar
 
 - For spigot : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-1/spigot/DatabaseLib_spigot-1.1.1.jar
-=======
-## Version 1.1.0
 
-Download :
+[wiki](https://warzoumc.github.io/DatabaseLib/wiki)
 
-- Normal : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-0/DatabaseLib-1.1.0.jar
-
-- For spigot : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-0/DatabaseLib_spigot-1.1.0.jar
+[javadoc](https://warzoumc.github.io/DatabaseLib/javadoc/)
