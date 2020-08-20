@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * Manage the database with.
  * <p>No real interest in making changes from this class.</p>
  * @author Warzou
- * @version 1.1.1
+ * @version 1.1.2
  * @since 0.0.1
  */
 public class DatabaseManager {
@@ -117,6 +117,8 @@ public class DatabaseManager {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -135,6 +137,9 @@ public class DatabaseManager {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSetConsumer.accept(resultSet);
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
