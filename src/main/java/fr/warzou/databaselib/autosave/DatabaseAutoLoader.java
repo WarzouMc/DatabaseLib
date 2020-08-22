@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 /**
  * Load your table.
  * @author Warzou
- * @version 1.1.2
+ * @version 1.1.3
  * @since 0.0.1
  */
 public class DatabaseAutoLoader {
@@ -42,7 +42,7 @@ public class DatabaseAutoLoader {
      * @since 0.0.1
      */
     public Map<Object, Database> init() {
-        System.out.println("Initialisation of your database with DatabaseLib v_1.1.2 by Warzou !");
+        System.out.println("Initialisation of your database with DatabaseLib v_1.1.3 by Warzou !");
         DatabaseTable.getDatabaseTablesRegisterLinkedHashMap().forEach((id, abstractDatabaseTables) -> {
             Database dataBase = new Database(abstractDatabaseTables);
             this.map.put(id, dataBase);

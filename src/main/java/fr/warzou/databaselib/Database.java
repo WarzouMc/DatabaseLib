@@ -11,7 +11,7 @@ import java.util.LinkedList;
 
 /**
  * Main manager for your table : getter, add/del/modify line
- * @version 1.1.1
+ * @version 1.1.3
  * @since 0.0.1
  * @author Warzou
  */
@@ -111,8 +111,10 @@ public class Database {
      * @return {@link Character} for the line with first value "referenceValue" and with column "column"
      * @since 1.1.0
      */
-    public char getChar(Object referenceValue, String column) {
-        return (char) get(referenceValue, column);
+    public Character getChar(Object referenceValue, String column) {
+        if (isNull(referenceValue, column))
+            return null;
+        return (Character) get(referenceValue, column);
     }
 
     /**
@@ -122,8 +124,10 @@ public class Database {
      * @return {@link Double} for the line with first value "referenceValue" and with column "column"
      * @since 1.0.0
      */
-    public double getDouble(Object referenceValue, String column) {
-        return (double) get(referenceValue, column);
+    public Double getDouble(Object referenceValue, String column) {
+        if (isNull(referenceValue, column))
+            return null;
+        return (Double) get(referenceValue, column);
     }
 
     /**
@@ -133,7 +137,9 @@ public class Database {
      * @return {@link Float} for the line with first value "referenceValue" and with column "column"
      * @since 1.0.0
      */
-    public float getFloat(Object referenceValue, String column) {
+    public Float getFloat(Object referenceValue, String column) {
+        if (isNull(referenceValue, column))
+            return null;
         return (float) get(referenceValue, column);
     }
 
@@ -144,8 +150,10 @@ public class Database {
      * @return {@link Long} for the line with first value "referenceValue" and with column "column"
      * @since 0.0.1
      */
-    public long getLong(Object referenceValue, String column) {
-        return (long) get(referenceValue, column);
+    public Long getLong(Object referenceValue, String column) {
+        if (isNull(referenceValue, column))
+            return null;
+        return (Long) get(referenceValue, column);
     }
 
     /**
@@ -155,8 +163,10 @@ public class Database {
      * @return {@link Integer} for the line with first value referenceValue and with column column
      * @since 0.0.1
      */
-    public int getInt(Object referenceValue, String column) {
-        return (int) get(referenceValue, column);
+    public Integer getInt(Object referenceValue, String column) {
+        if (isNull(referenceValue, column))
+            return null;
+        return (Integer) get(referenceValue, column);
     }
 
     /**
@@ -166,8 +176,10 @@ public class Database {
      * @return {@link Boolean} for the line with first value referenceValue and with column column
      * @since 0.0.1
      */
-    public boolean getBoolean(Object referenceValue, String column) {
-        return (boolean) get(referenceValue, column);
+    public Boolean getBoolean(Object referenceValue, String column) {
+        if (isNull(referenceValue, column))
+            return null;
+        return (Boolean) get(referenceValue, column);
     }
 
     /**
@@ -178,6 +190,8 @@ public class Database {
      * @since 0.0.1
      */
     public String getString(Object referenceValue, String column) {
+        if (isNull(referenceValue, column))
+            return null;
         return (String) get(referenceValue, column);
     }
 
@@ -190,6 +204,17 @@ public class Database {
      */
     public Object get(Object referenceValue, String column) {
         return this.databaseInformationLoader.get(referenceValue, column);
+    }
+
+    /**
+     * Get if a value is null or not
+     * @param referenceValue reference value of the line where is your target cell
+     * @param column the name of the target column
+     * @return true if the target cell is null
+     * @since 1.1.3
+     */
+    public boolean isNull(Object referenceValue, String column) {
+        return get(referenceValue, column) == null;
     }
 
     /**
