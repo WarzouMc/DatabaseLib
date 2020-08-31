@@ -11,7 +11,7 @@ import java.util.LinkedList;
 
 /**
  * Main manager for your table : getter, add/del/modify line
- * @version 1.1.3
+ * @version 1.1.4
  * @since 0.0.1
  * @author Warzou
  */
@@ -91,7 +91,7 @@ public class Database {
      * @since 0.0.1
      */
     public void delete(Object referenceValue) {
-        this.databaseInformationLoader.delete(new LinkedList<>(Collections.singletonList(referenceValue)));
+        this.databaseInformationLoader.delete(fullLineByReference(referenceValue));
     }
 
     /**
@@ -112,9 +112,7 @@ public class Database {
      * @since 1.1.0
      */
     public Character getChar(Object referenceValue, String column) {
-        if (isNull(referenceValue, column))
-            return null;
-        return (Character) get(referenceValue, column);
+        return isNull(referenceValue, column) ? null : (Character) get(referenceValue, column);
     }
 
     /**
@@ -125,9 +123,7 @@ public class Database {
      * @since 1.0.0
      */
     public Double getDouble(Object referenceValue, String column) {
-        if (isNull(referenceValue, column))
-            return null;
-        return (Double) get(referenceValue, column);
+        return isNull(referenceValue, column) ? null : (Double) get(referenceValue, column);
     }
 
     /**
@@ -138,9 +134,7 @@ public class Database {
      * @since 1.0.0
      */
     public Float getFloat(Object referenceValue, String column) {
-        if (isNull(referenceValue, column))
-            return null;
-        return (float) get(referenceValue, column);
+        return isNull(referenceValue, column) ? null : (Float) get(referenceValue, column);
     }
 
     /**
@@ -151,9 +145,7 @@ public class Database {
      * @since 0.0.1
      */
     public Long getLong(Object referenceValue, String column) {
-        if (isNull(referenceValue, column))
-            return null;
-        return (Long) get(referenceValue, column);
+        return isNull(referenceValue, column) ? null : (Long) get(referenceValue, column);
     }
 
     /**
@@ -164,9 +156,7 @@ public class Database {
      * @since 0.0.1
      */
     public Integer getInt(Object referenceValue, String column) {
-        if (isNull(referenceValue, column))
-            return null;
-        return (Integer) get(referenceValue, column);
+        return isNull(referenceValue, column) ? null : (Integer) get(referenceValue, column);
     }
 
     /**
@@ -177,9 +167,7 @@ public class Database {
      * @since 0.0.1
      */
     public Boolean getBoolean(Object referenceValue, String column) {
-        if (isNull(referenceValue, column))
-            return null;
-        return (Boolean) get(referenceValue, column);
+        return isNull(referenceValue, column) ? null : (Boolean) get(referenceValue, column);
     }
 
     /**
@@ -190,9 +178,7 @@ public class Database {
      * @since 0.0.1
      */
     public String getString(Object referenceValue, String column) {
-        if (isNull(referenceValue, column))
-            return null;
-        return (String) get(referenceValue, column);
+        return isNull(referenceValue, column) ? null : (String) get(referenceValue, column);
     }
 
     /**

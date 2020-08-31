@@ -2,15 +2,15 @@
 
 # DatabaseLib stock information in code
 
-## Version 1.1.3
+## Version 1.1.4
 
-Fix the npe when wanted to took a value with `Database#get...()` during a save with the newCallReload on true. 
+Fix no delete bug.
 
 Download :
 
-- Normal : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-3/normal/DatabaseLib-1.1.3.jar
+- Normal : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-4/normal/DatabaseLib-1.1.4.jar
 
-- For spigot : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-3/spigot/DatabaseLib_spigot-1.1.3.jar
+- For spigot : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-4/spigot/DatabaseLib_spigot-1.1.4.jar
 
 Javadoc -> https://warzoumc.github.io/DatabaseLib/javadoc/
 

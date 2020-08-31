@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * Manage the database with.
  * <p>No real interest in making changes from this class.</p>
  * @author Warzou
- * @version 1.1.2
+ * @version 1.1.4
  * @since 0.0.1
  */
 public class DatabaseManager {
@@ -233,7 +233,7 @@ public class DatabaseManager {
                     if (!resultSet.next()) {
                         System.out.println("####\n" +
                                 "Add line for value '" + referenceValue + "' !");
-                        this.update(this.addQuery(query[1], query[0].replace("\\", "\\\\")), connection);
+                        this.update(this.addQuery(query[1], query[0]), connection);
                         System.out.println("Success add line '" + line + "' !\n" +
                                 "####\n");
                     }
