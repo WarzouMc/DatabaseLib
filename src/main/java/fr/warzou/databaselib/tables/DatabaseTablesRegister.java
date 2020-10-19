@@ -8,7 +8,7 @@ import java.util.LinkedList;
 /**
  * Define your table properties to allow the creation of this table
  * @author Warzou
- * @version 1.1.1
+ * @version 1.1.5
  * @since 1.0.0
  */
 public class DatabaseTablesRegister {
@@ -16,23 +16,27 @@ public class DatabaseTablesRegister {
     /**
      * Database host
      */
-    private String host;
+    private final String host;
     /**
      * Database account username
      */
-    private String user;
+    private final String user;
     /**
      * Database account password
      */
-    private String password;
+    private final String password;
     /**
      * Group where is your table
      */
-    private String groupName;
+    private final String groupName;
     /**
      * Table name
      */
-    private String tableName;
+    private final String tableName;
+    /**
+     * Server time zone (ex: UTC)
+     */
+    private final String serverTimezone;
     /**
      * Take the modifications from another source when you reload table if true
      */
@@ -40,7 +44,7 @@ public class DatabaseTablesRegister {
     /**
      * Do not save values in code
      */
-    private boolean noStorage;
+    private final boolean noStorage;
 
     /**
      * Raw column {@link LinkedList}
@@ -53,6 +57,7 @@ public class DatabaseTablesRegister {
 
     /**
      * Construct a new {@link DatabaseTablesRegister}
+     * <i>Default server time zone is UTC</i>
      * @param host database host
      * @param user connection account username
      * @param password connection account password
@@ -63,11 +68,28 @@ public class DatabaseTablesRegister {
      * @since 1.0.0
      */
     public DatabaseTablesRegister(String host, String user, String password, String groupName, String tableName, boolean newCallOnReload, boolean noStorage) {
+        this(host, user, password, groupName, tableName, "UTC", newCallOnReload, noStorage);
+    }
+
+    /**
+     * Construct a new {@link DatabaseTablesRegister}
+     * @param host database host
+     * @param user connection account username
+     * @param password connection account password
+     * @param groupName name of the group where is your table
+     * @param tableName name of the table
+     * @param serverTimezone Server time zone (ex: UTC)
+     * @param newCallOnReload refresh your table with modification as from another source
+     * @param noStorage if true do not save values in code
+     * @since 1.1.5
+     */
+    public DatabaseTablesRegister(String host, String user, String password, String groupName, String tableName, String serverTimezone, boolean newCallOnReload, boolean noStorage) {
         this.host = host;
         this.user = user;
         this.password = password;
         this.groupName = groupName;
         this.tableName = tableName;
+        this.serverTimezone = serverTimezone;
         this.newCallOnReload = newCallOnReload;
         this.noStorage = noStorage;
     }
@@ -244,6 +266,15 @@ public class DatabaseTablesRegister {
      */
     public String getTableName() {
         return this.tableName;
+    }
+
+    /**
+     * Get server time zone
+     * @return the server time zone
+     * @since 1.1.5
+     */
+    public String getServerTimezone() {
+        return this.serverTimezone;
     }
 
     /**

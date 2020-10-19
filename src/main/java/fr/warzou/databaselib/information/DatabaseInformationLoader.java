@@ -14,7 +14,7 @@ import java.util.Map;
  * <p>You could create modification on the table from this class</p>
  * <p>but {@link Database} is better for this.</p>
  * @author Warzou
- * @version 1.1.1
+ * @version 1.1.5
  * @since 0.0.1
  */
 public class DatabaseInformationLoader {
@@ -26,11 +26,11 @@ public class DatabaseInformationLoader {
     /**
      * {@link LinkedHashMap} in key column name and in value {@link DatabaseColumnValues}
      */
-    private LinkedHashMap<String, DatabaseColumnValues> columnValues = new LinkedHashMap<>();
+    private final LinkedHashMap<String, DatabaseColumnValues> columnValues = new LinkedHashMap<>();
     /**
      * Raw column {@link LinkedList}
      */
-    private LinkedList<String> columns = new LinkedList<>();
+    private final LinkedList<String> columns = new LinkedList<>();
     /**
      * Associate manager ({@link DatabaseManager})
      */
@@ -39,23 +39,27 @@ public class DatabaseInformationLoader {
     /**
      * Database host
      */
-    private String host;
+    private final String host;
     /**
      * Database account username
      */
-    private String user;
+    private final String user;
     /**
      * Database account password
      */
-    private String password;
+    private final String password;
     /**
      * Group where is your table
      */
-    private String groupName;
+    private final String groupName;
+    /**
+     * Server time zone
+     */
+    private final String serverTimezone;
     /**
      * Associate {@link DatabaseTablesRegister}
      */
-    private DatabaseTablesRegister databaseTablesRegister;
+    private final DatabaseTablesRegister databaseTablesRegister;
 
     /**
      * Construct a new {@link DatabaseInformationLoader}
@@ -63,14 +67,16 @@ public class DatabaseInformationLoader {
      * @param user database account username
      * @param password database account password
      * @param groupName group where is your table
+     * @param serverTimezone server time zone (ex: UTC)
      * @param databaseTablesRegister associate {@link DatabaseTablesRegister}
      * @since 0.0.1
      */
-    public DatabaseInformationLoader(String host, String user, String password, String groupName, DatabaseTablesRegister databaseTablesRegister) {
+    public DatabaseInformationLoader(String host, String user, String password, String groupName, String serverTimezone, DatabaseTablesRegister databaseTablesRegister) {
         this.host = host;
         this.user = user;
         this.password = password;
         this.groupName = groupName;
+        this.serverTimezone = serverTimezone;
         this.databaseTablesRegister = databaseTablesRegister;
     }
 
@@ -80,7 +86,7 @@ public class DatabaseInformationLoader {
      */
     public void init() {
         this.columnType = new LinkedHashMap<>(this.databaseTablesRegister.getColumnAndType());
-        this.databaseManager = new DatabaseManager(this.host, this.user, this.password, this.groupName, this.databaseTablesRegister)
+        this.databaseManager = new DatabaseManager(this.host, this.user, this.password, this.groupName, this.serverTimezone, this.databaseTablesRegister)
                 .connection()
                 .init();
         this.columnType.keySet().forEach(s -> {

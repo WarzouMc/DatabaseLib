@@ -11,7 +11,7 @@ import java.util.LinkedList;
 
 /**
  * Main manager for your table : getter, add/del/modify line
- * @version 1.1.4
+ * @version 1.1.5
  * @since 0.0.1
  * @author Warzou
  */
@@ -25,24 +25,28 @@ public class Database {
     /**
      * Database host
      */
-    private String host;
+    private final String host;
     /**
      * Database account username
      */
-    private String user;
+    private final String user;
     /**
      * Database account password
      */
-    private String password;
+    private final String password;
     /**
      * Group where is your table
      */
-    private String groupName;
+    private final String groupName;
+    /**
+     * Server time zone (ex: UTC)
+     */
+    private final String serverTimezone;
 
     /**
      * Associate {@link DatabaseTablesRegister}
      */
-    private DatabaseTablesRegister databaseTablesRegister;
+    private final DatabaseTablesRegister databaseTablesRegister;
 
     /**
      * Construct a new {@link Database}
@@ -55,6 +59,7 @@ public class Database {
         this.user = databaseTablesRegister.getUser();
         this.password = databaseTablesRegister.getPassword();
         this.groupName = databaseTablesRegister.getGroupName();
+        this.serverTimezone = databaseTablesRegister.getServerTimezone();
     }
 
     /**
@@ -62,7 +67,7 @@ public class Database {
      * @since 0.0.1
      */
     public void load() {
-        this.databaseInformationLoader = new DatabaseInformationLoader(this.host, this.user, this.password, this.groupName, this.databaseTablesRegister);
+        this.databaseInformationLoader = new DatabaseInformationLoader(this.host, this.user, this.password, this.groupName, this.serverTimezone, this.databaseTablesRegister);
         this.databaseInformationLoader.init();
     }
 

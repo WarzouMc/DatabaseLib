@@ -2,15 +2,16 @@
 
 # DatabaseLib stock information in code
 
-## Version 1.1.4
+## Version 1.1.5
 
-Fix no delete bug.
+Add server time zone.
+Fix some bugs
 
 Download :
 
-- Normal : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-4/normal/DatabaseLib-1.1.4.jar
+- Normal : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-5/normal/DatabaseLib-1.1.5.jar
 
-- For spigot : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-4/spigot/DatabaseLib_spigot-1.1.4.jar
+- For spigot : https://github.com/WarzouMc/DatabaseLib/raw/master/jars/v_1-1-5/spigot/DatabaseLib_spigot-1.1.5.jar
 
 Javadoc -> https://warzoumc.github.io/DatabaseLib/javadoc/
 

@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 /**
  * Load your table.
  * @author Warzou
- * @version 1.1.4
+ * @version 1.1.5
  * @since 0.0.1
  */
 public class DatabaseAutoLoader {
@@ -22,6 +22,7 @@ public class DatabaseAutoLoader {
      * Use for async save.
      */
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     /**
      * Map to stock id for all {@link Database}
      * {@link Map}
@@ -42,10 +43,10 @@ public class DatabaseAutoLoader {
      * @since 0.0.1
      */
     public Map<Object, Database> init() {
-        System.out.println("Initialisation of your database with DatabaseLib v_1.1.4 by Warzou !");
+        System.out.println("Initialisation of your database with DatabaseLib v_1.1.5 by Warzou !");
         DatabaseTable.getDatabaseTablesRegisterLinkedHashMap().forEach((id, abstractDatabaseTables) -> {
-            Database dataBase = new Database(abstractDatabaseTables);
-            this.map.put(id, dataBase);
+            Database database = new Database(abstractDatabaseTables);
+            this.map.put(id, database);
         });
         return this.map;
     }
@@ -93,12 +94,12 @@ public class DatabaseAutoLoader {
      * @since 0.0.2
      */
     private void out(DatabaseFullSaveInformation databaseFullSaveInformation) {
-        for (DatabaseTableSaveInformation dataBaseTableSaveInformation : databaseFullSaveInformation.getDatabaseTableSaveInformation()) {
-            System.out.println("### Save statistics on " + dataBaseTableSaveInformation.getDatabaseTablesRegister().getTableName() + " ###");
-            System.out.println("- Additions : " + dataBaseTableSaveInformation.getAddition());
-            System.out.println("- Deletions : " + dataBaseTableSaveInformation.getDeletion());
-            System.out.println("- Modifications : " + dataBaseTableSaveInformation.getModification());
-            System.out.println("This table took " + dataBaseTableSaveInformation.getTimeTake() + "s to be saved !\n");
+        for (DatabaseTableSaveInformation databaseTableSaveInformation : databaseFullSaveInformation.getDatabaseTableSaveInformation()) {
+            System.out.println("### Save statistics on " + databaseTableSaveInformation.getDatabaseTablesRegister().getTableName() + " ###");
+            System.out.println("- Additions : " + databaseTableSaveInformation.getAddition());
+            System.out.println("- Deletions : " + databaseTableSaveInformation.getDeletion());
+            System.out.println("- Modifications : " + databaseTableSaveInformation.getModification());
+            System.out.println("This table took " + databaseTableSaveInformation.getTimeTake() + "s to be saved !\n");
         }
         System.out.println("\n### All save statistics ###");
         System.out.println("- Additions : " + databaseFullSaveInformation.getTotalAddition());

@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * Manage the database with.
  * <p>No real interest in making changes from this class.</p>
  * @author Warzou
- * @version 1.1.4
+ * @version 1.1.5
  * @since 0.0.1
  */
 public class DatabaseManager {
@@ -25,23 +25,27 @@ public class DatabaseManager {
     /**
      * Database host
      */
-    private String host;
+    private final String host;
     /**
      * Database account username
      */
-    private String user;
+    private final String user;
     /**
      * Database account password
      */
-    private String password;
+    private final String password;
     /**
      * Group where is your table
      */
-    private String groupName;
+    private final String groupName;
+    /**
+     * Server time zone
+     */
+    private final String serverTimezone;
     /**
      * Associate {@link DatabaseTablesRegister}
      */
-    private DatabaseTablesRegister databaseTablesRegister;
+    private final DatabaseTablesRegister databaseTablesRegister;
 
     /**
      * Database {@link BasicDataSource}
@@ -54,14 +58,16 @@ public class DatabaseManager {
      * @param user access account username
      * @param password access account password
      * @param groupName group where is your table
+     * @param serverTimezone server time zone (ex: UTC)
      * @param databaseTablesRegister instance of {@link DatabaseTablesRegister}
      * @since 0.0.1
      */
-    public DatabaseManager(String host, String user, String password, String groupName, DatabaseTablesRegister databaseTablesRegister) {
+    public DatabaseManager(String host, String user, String password, String groupName, String serverTimezone, DatabaseTablesRegister databaseTablesRegister) {
         this.host = host;
         this.user = user;
         this.password = password;
         this.groupName = groupName;
+        this.serverTimezone = serverTimezone;
         this.databaseTablesRegister = databaseTablesRegister;
     }
 
@@ -77,7 +83,7 @@ public class DatabaseManager {
         this.connectionPool.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.connectionPool.setUsername(this.user);
         this.connectionPool.setPassword(this.password);
-        this.connectionPool.setUrl(String.format("jdbc:mysql://%s/%s?autoReconnect=true&useSSL=false", this.host, this.groupName));
+        this.connectionPool.setUrl(String.format("jdbc:mysql://%s/%s?autoReconnect=true&useSSL=false&serverTimezone=%s", this.host, this.groupName, this.serverTimezone));
         this.connectionPool.setInitialSize(1);
         this.connectionPool.setMaxTotal(-1);
         return this;
@@ -99,9 +105,10 @@ public class DatabaseManager {
                 stringBuilder.append(" ").append(option);
             stringBuilder.append(", ");
         });
+        Connection connection = getConnection();
         update("CREATE TABLE IF NOT EXISTS " + databaseTablesRegister.getTableName() + " (" +
                 stringBuilder.substring(0, stringBuilder.toString().length() - 2) +
-                ")", this.getConnection());
+                ")", connection);
         System.out.println("Success \"" + this.databaseTablesRegister.getTableName() + "\" initialization !\n" +
                 "Wait few moment ...\n");
         return this;
@@ -118,7 +125,6 @@ public class DatabaseManager {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.executeUpdate();
             preparedStatement.close();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -139,7 +145,6 @@ public class DatabaseManager {
             resultSetConsumer.accept(resultSet);
             resultSet.close();
             preparedStatement.close();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
