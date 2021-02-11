@@ -90,7 +90,6 @@ public class DatabaseLogger extends Logger {
         handler.setLevel(logRecord.getLevel());
         handler.setFormatter(new DatabaseLoggerFormat(this.name));
         addHandler(handler);
-
         log(logRecord);
         removeHandler(handler);
     }

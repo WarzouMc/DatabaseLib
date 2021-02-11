@@ -7,11 +7,11 @@ import fr.warzou.databaselib.impl.database.WDatabase;
 public class NoConnectedDatabaseException extends DatabaseException {
 
     public NoConnectedDatabaseException(Database database) {
-        super(database, "'" + ((WDatabase) database).getUniqueName() + "' is no connected");
+        super(database, "'" + ((WDatabase) database).getUniqueName() + "' is not connected");
     }
 
     public NoConnectedDatabaseException(Database database, User user) {
-        super(database, "The user '" + user.getUsername() + "' is no connected on '" + ((WDatabase) database).getUniqueName() + "'");
+        super(database, "The user '" + user.getUsername() + "' is not connected on '" + ((WDatabase) database).getUniqueName() + "'");
     }
 
 }

@@ -1,5 +1,6 @@
 package fr.warzou.databaselib.impl.query.condition;
 
+import fr.warzou.databaselib.dbl.data.Data;
 import fr.warzou.databaselib.dbl.db.columns.Column;
 import fr.warzou.databaselib.dbl.db.query.condition.Condition;
 
@@ -10,47 +11,47 @@ public class WCondition implements Condition {
 
     @SafeVarargs
     @Override
-    public final <T> Condition in(Column<T> column, T... in) {
+    public final <T extends Data<?>> Condition in(Column<T> column, T... in) {
         return in(column, Arrays.asList(in));
     }
 
     @Override
-    public <T> Condition in(Column<T> column, List<T> in) {
+    public <T extends Data<?>> Condition in(Column<T> column, List<T> in) {
         return null;
     }
 
     @Override
-    public <T> Condition between(Column<T> column, T bound1, T bound2) {
+    public <T extends Data<?>> Condition between(Column<T> column, T bound1, T bound2) {
         return null;
     }
 
     @Override
-    public <T extends String> Condition like(Column<T> column, String model) {
+    public <T extends Data<String>> Condition like(Column<T> column, String model) {
         return null;
     }
 
     @Override
-    public <T extends String> Condition likeStartedBy(Column<T> column, String start) {
+    public <T extends Data<String>> Condition likeStartedBy(Column<T> column, String start) {
         return null;
     }
 
     @Override
-    public <T extends String> Condition likeEndedBy(Column<T> column, String end) {
+    public <T extends Data<String>> Condition likeEndedBy(Column<T> column, String end) {
         return null;
     }
 
     @Override
-    public <T extends String> Condition likeContain(Column<T> column, String contain) {
+    public <T extends Data<String>> Condition likeContain(Column<T> column, String contain) {
         return null;
     }
 
     @Override
-    public <T extends String> Condition likeBoundedBy(Column<T> column, String start, String end) {
+    public <T extends Data<String>> Condition likeBoundedBy(Column<T> column, String start, String end) {
         return null;
     }
 
     @Override
-    public <T extends String> Condition likeWithUnknownCharacter(Column<T> column, String before, String after) {
+    public <T extends Data<?>> Condition likeWithUnknownCharacter(Column<T> column, String before, String after) {
         return null;
     }
 

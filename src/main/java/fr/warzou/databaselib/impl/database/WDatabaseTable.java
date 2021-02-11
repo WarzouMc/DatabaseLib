@@ -1,5 +1,6 @@
 package fr.warzou.databaselib.impl.database;
 
+import fr.warzou.databaselib.dbl.data.Data;
 import fr.warzou.databaselib.dbl.db.columns.Column;
 import fr.warzou.databaselib.dbl.db.columns.UnregisteredCell;
 import fr.warzou.databaselib.dbl.db.database.Database;
@@ -16,7 +17,7 @@ public class WDatabaseTable implements DatabaseTable {
     }
 
     @Override
-    public <T> UnregisteredCell<T> getCell(Column<T> column, T value) {
+    public <T extends Data<?>> UnregisteredCell<T> getCell(Column<T> column, T data) {
         return new UnregisteredCell<T>() {
             @Override
             public Column<T> ofColumn() {
@@ -24,8 +25,8 @@ public class WDatabaseTable implements DatabaseTable {
             }
 
             @Override
-            public T ofValue() {
-                return value;
+            public T ofData() {
+                return data;
             }
         };
     }

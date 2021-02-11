@@ -38,19 +38,8 @@ public class WColumn<T extends Data<?>> implements Column<T> {
     }
 
     @Override
-    public Optional<Class<T>> getType() {
-        if (this.t == null)
-            return Optional.empty();
-        return Optional.of(this.t.getClass().asSubclass(this.t.getClass()));
-    }
-
-    @Override
-    public Optional<T> getDefault() {
-        if (this.isNull)
-            return Optional.ofNullable(this.t);
-        if (this.t == null)
-            return Optional.empty();
-        return Optional.of(this.t);
+    public T getData() {
+        return this.t;
     }
 
     @Override
@@ -59,16 +48,26 @@ public class WColumn<T extends Data<?>> implements Column<T> {
     }
 
     @Override
+    public String getComment() {
+        return null;
+    }
+
+    @Override
     public boolean isPrimaryKey() {
         return this.primary;
     }
 
-    protected void setId(int id) {
-        this.id = id;
+    @Override
+    public boolean isUnique() {
+        return false;
     }
 
     @Override
-    public int getId() {
-        return this.id;
+    public boolean isAutoIncrement() {
+        return false;
+    }
+
+    protected void setId(int id) {
+        this.id = id;
     }
 }

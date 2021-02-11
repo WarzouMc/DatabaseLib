@@ -10,9 +10,15 @@ import java.util.stream.Collectors;
 
 public class SimpleDatabaseEventCaller implements DatabaseEventCaller {
 
+    private final DatabaseEventHandlerList databaseEventHandlerList;
+
+    public SimpleDatabaseEventCaller(DatabaseEventHandlerList handlerList) {
+        this.databaseEventHandlerList = handlerList;
+    }
+
     @Override
     public void callEvent(DatabaseEvent event) {
-        Collection<DatabaseEventMethod> handlerList = DatabaseEventHandlerList.handlerList();
+        Collection<DatabaseEventMethod> handlerList = this.databaseEventHandlerList.handlerList();
         List<DatabaseEventMethod> targetMethods = handlerList.stream()
                 .filter(databaseEventMethod -> event.getClass().isAssignableFrom(databaseEventMethod.getTargetEvent()))
                 .sorted((o1, o2) -> Integer.compare(o2.getPriority().power(), o1.getPriority().power()))

@@ -1,5 +1,6 @@
 package fr.warzou.databaselib.impl.database.manager.builder;
 
+import fr.warzou.databaselib.dbl.data.Data;
 import fr.warzou.databaselib.dbl.db.columns.Column;
 import fr.warzou.databaselib.dbl.db.table.DatabaseTable;
 import fr.warzou.databaselib.dbl.db.table.DatabaseTableBuilder;
@@ -20,7 +21,7 @@ public class WDatabaseTableBuilder implements DatabaseTableBuilder {
     }
 
     @Override
-    public <T extends Class<?>> DatabaseTableBuilder addColumn(Column<T> column) {
+    public <T extends Data<?>> DatabaseTableBuilder addColumn(Column<T> column) {
         return this;
     }
 

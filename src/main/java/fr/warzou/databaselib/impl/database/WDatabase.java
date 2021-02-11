@@ -27,28 +27,31 @@ public class WDatabase extends DatabaseLogger implements Database {
     private boolean disabled = false;
     private final Driver driver;
 
+    private final DatabaseLib session;
+
     private final HashMap<UUID, DatabaseTable> tables;
     private DatabaseInteraction databaseInteraction;
+    private final DatabaseManager databaseManager;
 
-    public WDatabase(User user, String name, String host, Driver driver) throws IncompatibleUserHostException,
+    public WDatabase(DatabaseLib session, User user, String name, String host, Driver driver) throws IncompatibleUserHostException,
             NonRegisteredUserException {
-        this(user, name, host, "UTC", true, driver);
+        this(session, user, name, host, "UTC", true, driver);
     }
 
-    public WDatabase(User user, String name, String host, String serverTimeZone, Driver driver)
+    public WDatabase(DatabaseLib session, User user, String name, String host, String serverTimeZone, Driver driver)
             throws IncompatibleUserHostException, NonRegisteredUserException {
-        this(user, name, host, serverTimeZone, true, driver);
+        this(session, user, name, host, serverTimeZone, true, driver);
     }
 
-    public WDatabase(User user, String name, String host, boolean async, Driver driver)
+    public WDatabase(DatabaseLib session, User user, String name, String host, boolean async, Driver driver)
             throws IncompatibleUserHostException, NonRegisteredUserException {
-        this(user, name, host, "UTC", async, driver);
+        this(session, user, name, host, "UTC", async, driver);
     }
 
-    public WDatabase(User user, String name, String host, String serverTimeZone, boolean async, Driver driver)
+    public WDatabase(DatabaseLib session, User user, String name, String host, String serverTimeZone, boolean async, Driver driver)
             throws IncompatibleUserHostException, NonRegisteredUserException {
         super(user, name, host);
-        if (!DatabaseLib.getUsersManager().getUser(user.getUsername(), user.getHost()).isPresent())
+        if (!session.getUsersManager().getUser(user.getUsername(), user.getHost()).isPresent())
             throw new NonRegisteredUserException(user.getUsername(), user.getHost());
         this.user = user;
         this.name = name;
@@ -57,6 +60,9 @@ public class WDatabase extends DatabaseLogger implements Database {
         this.async = async;
         this.tables = new HashMap<>();
         this.driver = driver;
+
+        this.session = session;
+        this.databaseManager = this.session.getDatabaseManager();
 
         WUser wUser = (WUser) this.user;
         wUser.linkDatabase(this);
@@ -70,7 +76,7 @@ public class WDatabase extends DatabaseLogger implements Database {
         if (this.disabled)
             return;
         logMessage(new LogRecord(Level.INFO, "Try connection..."));
-        DatabaseManager.connectDatabase(this);
+        this.databaseManager.connectDatabase(this);
 
         this.databaseInteraction = new DatabaseInteraction(this);
         this.databaseInteraction.connect();
@@ -83,7 +89,7 @@ public class WDatabase extends DatabaseLogger implements Database {
         logMessage(new LogRecord(Level.INFO, "Disconnection task..."));
         if (this.databaseInteraction == null || !this.databaseInteraction.isConnect())
             throw new NoConnectedDatabaseException(this);
-        DatabaseManager.disconnectDatabase(this);
+        this.databaseManager.disconnectDatabase(this);
 
         this.databaseInteraction.disconnect();
         this.databaseInteraction = null;
@@ -164,8 +170,12 @@ public class WDatabase extends DatabaseLogger implements Database {
         return this.host + "::" + this.name + "::" + this.user.getUsername();
     }
 
+    public final DatabaseLib getSession() {
+        return this.session;
+    }
+
     protected boolean isConnected() {
-        return DatabaseManager.getDatabase(getUniqueName(), this.host).isPresent();
+        return this.databaseManager.getDatabase(getUniqueName(), this.host).isPresent();
     }
 
     @Override

@@ -4,6 +4,6 @@ import fr.warzou.databaselib.impl.data.datatype.string.CharData;
 
 public final class DataType {
 
-    public static final Data<String> CHAR = new CharData();
+    public static final Data<String> CHAR = new CharData((short) 20);
 
 }

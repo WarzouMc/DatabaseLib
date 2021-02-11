@@ -1,6 +1,5 @@
 package fr.warzou.databaselib.impl.database.interaction;
 
-import fr.warzou.databaselib.DatabaseLib;
 import fr.warzou.databaselib.dbl.db.database.Database;
 import fr.warzou.databaselib.dbl.user.User;
 import fr.warzou.databaselib.events.event.connection.ConnectDatabaseEvent;
@@ -41,7 +40,7 @@ public abstract class AbstractDatabaseInteraction {
             actionClock.stop();
             getWDatabase().logMessage(new LogRecord(Level.INFO, "Connection success in " + actionClock.toSeconds() + "s"));
             ConnectDatabaseEvent connectDatabaseEvent = new ConnectDatabaseEvent(this.database);
-            DatabaseLib.getEventManager().callEvent(connectDatabaseEvent);
+            ((WDatabase) database).getSession().getDatabaseEventManager().callEvent(connectDatabaseEvent);
         } catch (SQLException exception) {
             getWDatabase().logError(exception);
         }
@@ -56,7 +55,7 @@ public abstract class AbstractDatabaseInteraction {
             actionClock.stop();
             getWDatabase().logMessage(new LogRecord(Level.INFO, "Connection close in " + actionClock.toSeconds() + "s"));
             DisconnectDatabaseEvent disconnectDatabaseEvent = new DisconnectDatabaseEvent(this.database);
-            DatabaseLib.getEventManager().callEvent(disconnectDatabaseEvent);
+            ((WDatabase) database).getSession().getDatabaseEventManager().callEvent(disconnectDatabaseEvent);
         } catch (SQLException exception) {
             getWDatabase().logError(exception);
         }
@@ -65,6 +64,11 @@ public abstract class AbstractDatabaseInteraction {
     protected <T> T query(String sql, Class<T> clazz) {
         ActionClock actionClock = new ActionClock();
         actionClock.start();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         AtomicReference<T> atomicReference = new AtomicReference<>();
         Consumer<ResultSet> consumer = resultSet -> {
             try {
@@ -79,7 +83,7 @@ public abstract class AbstractDatabaseInteraction {
             ResultSet resultSet = this.connection.createStatement().executeQuery(sql);
             consumer.accept(resultSet);
             actionClock.stop();
-            System.out.println(actionClock.toSeconds());
+            System.out.println("query -> " + actionClock.toSeconds() + "s");
             return atomicReference.get();
         } catch (SQLException exception) {
             exception.printStackTrace();

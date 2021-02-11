@@ -1,13 +1,17 @@
 package fr.warzou.databaselib.impl.data.datatype.string;
 
 import fr.warzou.databaselib.dbl.data.GlobalDataType;
-import fr.warzou.databaselib.dbl.data.builder.SQLDataBuilder;
 import fr.warzou.databaselib.dbl.data.subdata.LengthData;
-import fr.warzou.databaselib.impl.data.sqldatabuilder.SQLDataBuilderImpl;
+
+import java.util.Optional;
 
 public class CharData extends AbstractStringData<Byte, Short> {
 
-    private byte signedLength = Byte.MAX_VALUE;
+    private byte signedLength;
+
+    public CharData(Short length) {
+        this.signedLength = length.byteValue();
+    }
 
     @Override
     public Class<String> getType() {
@@ -20,9 +24,38 @@ public class CharData extends AbstractStringData<Byte, Short> {
     }
 
     @Override
-    public SQLDataBuilder<String, CharData> createSQLData() {
-        SQLDataBuilder<String, CharData> builder = new SQLDataBuilderImpl<>(String.class, this, "char");
-        return builder;
+    public Optional<String> getDefault() {
+        return Optional.empty();
+    }
+
+    @Override
+    public int getDefaultValueOption() {
+        return 0;
+    }
+
+    @Override
+    public boolean isPrimaryKey() {
+        return false;
+    }
+
+    @Override
+    public boolean isUnique() {
+        return false;
+    }
+
+    @Override
+    public boolean isNullable() {
+        return false;
+    }
+
+    @Override
+    public boolean hasDefaultValue() {
+        return false;
+    }
+
+    @Override
+    public boolean hasDefaultValueOption() {
+        return false;
     }
 
     @Override

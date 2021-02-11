@@ -6,20 +6,15 @@ import fr.warzou.databaselib.dbl.drivers.Drivers;
 import fr.warzou.databaselib.impl.query.AbstractQuery;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class SimpleDriverManager implements DriverManager {
 
     private final Map<String, Driver> drivers = new HashMap<>();
-    private static final Map<Drivers, Driver> safeDrivers = new HashMap<>();
+    private final Map<Drivers, Driver> safeDrivers = new HashMap<>();
 
-    static {
-        for (Drivers value : Drivers.values()) {
-            safeDrivers.put(value, new WSafeDriver(value));
-        }
+    public SimpleDriverManager() {
+        Arrays.asList(Drivers.values()).forEach(drivers -> safeDrivers.put(drivers, new WSafeDriver(drivers)));
     }
 
     @Override

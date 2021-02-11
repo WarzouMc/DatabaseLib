@@ -1,6 +1,6 @@
 package fr.warzou.databaselib.dbl.data;
 
-import fr.warzou.databaselib.dbl.data.builder.SQLDataBuilder;
+import java.util.Optional;
 
 public interface Data<T> {
 
@@ -10,6 +10,22 @@ public interface Data<T> {
 
     GlobalDataType getGlobalType();
 
-    SQLDataBuilder<T, ? extends Data<T>> createSQLData();
+    Optional<T> getDefault();
+
+    /**
+     *
+     * @return -1 if hasDefaultValueOption is false
+     */
+    int getDefaultValueOption();
+
+    boolean isPrimaryKey();
+
+    boolean isUnique();
+
+    boolean isNullable();
+
+    boolean hasDefaultValue();
+
+    boolean hasDefaultValueOption();
 
 }

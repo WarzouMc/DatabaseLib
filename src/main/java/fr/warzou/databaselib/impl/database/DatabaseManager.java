@@ -10,17 +10,17 @@ import java.util.Optional;
 
 public class DatabaseManager {
 
-    private static final Collection<Database> databases = new ArrayList<>();
+    private final Collection<Database> databases = new ArrayList<>();
 
-    protected static void connectDatabase(Database database) throws TooManyConnectionOnDatabaseException {
+    protected void connectDatabase(Database database) throws TooManyConnectionOnDatabaseException {
         Optional<Database> databaseOptional = getDatabase(((WDatabase) database).getUniqueName(), database.getHost());
         if (databaseOptional.isPresent())
             throw new TooManyConnectionOnDatabaseException(database.getUser(), databaseOptional.get().getUser(), database);
 
-        databases.add(database);
+        this.databases.add(database);
     }
 
-    protected static void disconnectDatabase(Database database) throws NoConnectedDatabaseException {
+    protected void disconnectDatabase(Database database) throws NoConnectedDatabaseException {
         Optional<Database> databaseOptional = getDatabase(((WDatabase) database).getUniqueName(), database.getHost());
         if (!databaseOptional.isPresent())
             throw new NoConnectedDatabaseException(database);
@@ -28,11 +28,12 @@ public class DatabaseManager {
         if (!linked.getUser().getUsername().equals(database.getUser().getUsername()))
            throw new NoConnectedDatabaseException(database, database.getUser());
 
-        databases.remove(database);
+        this.databases.remove(database);
     }
 
-    protected static Optional<Database> getDatabase(String name, String host) {
-        return databases.stream().filter(database -> ((WDatabase) database).getUniqueName().equals(name) && database.getHost().equals(host)).findFirst();
+    protected Optional<Database> getDatabase(String name, String host) {
+        return this.databases.stream().filter(database -> ((WDatabase) database).getUniqueName().equals(name)
+                && database.getHost().equals(host)).findFirst();
     }
 
 }

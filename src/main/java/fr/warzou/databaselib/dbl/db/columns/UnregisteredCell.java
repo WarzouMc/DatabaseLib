@@ -1,9 +1,11 @@
 package fr.warzou.databaselib.dbl.db.columns;
 
-public interface UnregisteredCell<T> {
+import fr.warzou.databaselib.dbl.data.Data;
+
+public interface UnregisteredCell<T extends Data<?>> {
 
     Column<T> ofColumn();
 
-    T ofValue();
+    T ofData();
 
 }

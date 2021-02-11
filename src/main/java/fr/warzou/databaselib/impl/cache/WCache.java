@@ -38,9 +38,11 @@ public class WCache<T> implements Cache<T> {
 
     @Override
     public Optional<T> get() {
+        System.out.println(isLiving() + " " + this.t + " " + this.since + " " + (this.since + this.lifeTime) + " " + Instant.now().toEpochMilli());
         if (!isLiving()) {
             this.since = -1;
             this.t = null;
+            System.out.println("éwo");
             return Optional.empty();
         }
         return Optional.of(this.t);
@@ -48,6 +50,6 @@ public class WCache<T> implements Cache<T> {
 
     public boolean isLiving() {
         long now = Instant.now().toEpochMilli();
-        return this.t != null && this.since != -1 && this.since + this.lifeTime < now;
+        return this.t != null && this.since != -1 && this.since + this.lifeTime > now;
     }
 }

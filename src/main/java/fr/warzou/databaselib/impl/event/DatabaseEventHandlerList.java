@@ -9,11 +9,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public final class DatabaseEventHandlerList {
+public class DatabaseEventHandlerList {
 
-    private static final Collection<DatabaseEventMethod> handlerList = new ArrayList<>();
+    private final Collection<DatabaseEventMethod> handlerList = new ArrayList<>();
 
-    protected static void registerListener(@NotNull DatabaseListener databaseListener) {
+    protected void registerListener(@NotNull DatabaseListener databaseListener) {
         if (containListener(databaseListener))
             return;
         Method[] methods = databaseListener.getClass().getMethods();
@@ -34,24 +34,24 @@ public final class DatabaseEventHandlerList {
             if (databaseEventMethod == null)
                 return;
 
-            handlerList.add(databaseEventMethod);
+            this.handlerList.add(databaseEventMethod);
         }
     }
 
-    protected static void unregisterListener(@NotNull DatabaseListener databaseListener) {
+    protected void unregisterListener(@NotNull DatabaseListener databaseListener) {
         if (!containListener(databaseListener))
             return;
-        handlerList.removeIf(databaseEventMethod -> databaseEventMethod.getListener().getClass().getName()
+        this.handlerList.removeIf(databaseEventMethod -> databaseEventMethod.getListener().getClass().getName()
                 .equals(databaseListener.getClass().getName()));
     }
 
-    private static boolean containListener(DatabaseListener databaseListener) {
-        return handlerList.stream().anyMatch(databaseEventMethod -> databaseEventMethod.getListener().getClass().getName()
+    private boolean containListener(DatabaseListener databaseListener) {
+        return this.handlerList.stream().anyMatch(databaseEventMethod -> databaseEventMethod.getListener().getClass().getName()
                 .equals(databaseListener.getClass().getName()));
     }
 
-    protected static Collection<DatabaseEventMethod> handlerList() {
-        return handlerList;
+    protected Collection<DatabaseEventMethod> handlerList() {
+        return this.handlerList;
     }
 
 }

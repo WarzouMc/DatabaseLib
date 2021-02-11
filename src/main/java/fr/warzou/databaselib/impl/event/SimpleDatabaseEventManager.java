@@ -9,19 +9,21 @@ import org.jetbrains.annotations.NotNull;
 public class SimpleDatabaseEventManager implements DatabaseEventManager {
 
     private final DatabaseEventCaller databaseEventCaller;
+    private final DatabaseEventHandlerList databaseEventHandlerList;
 
     public SimpleDatabaseEventManager() {
-        this.databaseEventCaller = new SimpleDatabaseEventCaller();
+        this.databaseEventHandlerList = new DatabaseEventHandlerList();
+        this.databaseEventCaller = new SimpleDatabaseEventCaller(this.databaseEventHandlerList);
     }
 
     @Override
     public void registerListener(@NotNull DatabaseListener databaseListener) {
-        DatabaseEventHandlerList.registerListener(databaseListener);
+        this.databaseEventHandlerList.registerListener(databaseListener);
     }
 
     @Override
     public void unregisterListener(@NotNull DatabaseListener databaseListener) {
-        DatabaseEventHandlerList.unregisterListener(databaseListener);
+        this.databaseEventHandlerList.unregisterListener(databaseListener);
     }
 
     @Override

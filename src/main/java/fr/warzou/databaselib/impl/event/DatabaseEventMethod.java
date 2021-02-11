@@ -65,6 +65,5 @@ public class DatabaseEventMethod {
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        this.method.setAccessible(false);
     }
 }
