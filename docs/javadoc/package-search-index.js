@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"fr.warzou.databaselib"},{"l":"fr.warzou.databaselib.autosave"},{"l":"fr.warzou.databaselib.information"},{"l":"fr.warzou.databaselib.information.save"},{"l":"fr.warzou.databaselib.manager"},{"l":"fr.warzou.databaselib.tables"}]
